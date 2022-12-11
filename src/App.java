@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class Storere {
+public class App {
 
     String url = "jdbc:postgresql://localhost:3005/LookInnaBook";
     String user = "postgres";

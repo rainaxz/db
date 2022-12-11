@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class App {
+public class Store{
 
     String url = "jdbc:postgresql://localhost:3005/LookInnaBook";
     String user = "postgres";
@@ -30,7 +30,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-        App app = new App();
-        app.connect();
+        Store store = new Store();
+        store.connect();
     }
 }
