@@ -137,7 +137,7 @@ public class User {
                 //     return cart;
                 // }
 
-                //Shipping.ShippingInfo(cart, book_nameOutput, statement);
+                Shipping.ShippingInfo(cart);
             }
         }
         catch (Exception sqle) {
