@@ -29,31 +29,6 @@ public class Store{
             }
 
             scanner.close();
-
-        //Connection connection = null;
-        //ResultSet result; 
-
-        // try {
-
-        //     //conect to the database
-        //     // connection = DriverManager.getConnection(url, user, password);
-        //     // System.out.println("Connected to the PostgreSQL server successfully.");
-
-
-            
-
-        //     // Statement statement = connection.createStatement();
-        //     // result = statement.executeQuery("SELECT * FROM book");
-
-        //     // while (result.next()){
-        //     //     System.out.println(result.getString("book_name"));
-        //     // }
-
-        // } catch (SQLException e) {
-        //     System.out.println(e.getMessage());
-        // }
-
-        // return connection;
     }
 
     public static void main(String[] args) {

@@ -1,15 +1,12 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.sql.*;
+import java.util.*;
 
 public class Shipping {
     static void ShippingInfo(ArrayList<String> cart) throws SQLException {
-         Scanner scan = new Scanner(System.in);
+        User user = new User();
+        Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.println("Would you like to add this book to your cart? ");
             System.out.println("1. Yes ");
@@ -69,6 +66,9 @@ public class Shipping {
                 catch (Exception sqle) {
                 System.out.println("Exception: " + sqle);
                 }
+            }
+            else{
+                User.userPrompts();
             }
         }
     }

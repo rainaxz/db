@@ -40,6 +40,14 @@ public class User {
                 System.out.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println(login.getString("username"));
                 System.out.println(login.getString("password"));
+
+                String db_user = login.getString("username");
+                String db_pass = login.getString("password");
+
+                if(!(db_user == input_username && db_pass == input_password)){
+                    System.out.println("Invalid login info. Closing Bookstore...");
+                    success = false;
+                }
             }
 
         } catch (SQLException e) {
@@ -47,21 +55,18 @@ public class User {
             success = false;
         }
 
-        scanner.close();
-
         if (success){
             userPrompts();
         }   
     }
 
-    static void userPrompts(){
+    public static void userPrompts(){
 
     
         ArrayList<String> cart = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
 
         while (true) {
-
-            Scanner scanner = new Scanner(System.in);
 
             System.out.println("Make a selection:");
             System.out.println("--------------------");
@@ -121,7 +126,7 @@ public class User {
             String isbn = " ";
             if (a == 1) {
                 System.out.println("Search by book name. \nEnter book name.");
-                String book_name = scan.nextLine();
+                String book_name = scanner.nextLine();
 
                 ResultSet book_nameOutput = statement.executeQuery("SELECT * " +
                         "FROM (( book " +
@@ -151,9 +156,9 @@ public class User {
                 // Shipping.ShippingInfo(cart);
             } else if (a == 2) {
                 System.out.println("Search Book by Author's name. \nEnter Author's first name. ");
-                String authorFName = scan.nextLine();
+                String authorFName = scanner.nextLine();
                 System.out.println("Enter Author's last name. ");
-                String authorLName = scan.nextLine();
+                String authorLName = scanner.nextLine();
                 isbn = " ";
 
                 ResultSet authorOutput = statement.executeQuery("SELECT *" +
@@ -194,7 +199,7 @@ public class User {
 
             } else if (a == 3) {
                 System.out.println("Search by ISBN number. \nEnter ISBN number.");
-                String isbnSearch = scan.nextLine();
+                String isbnSearch = scanner.nextLine();
 
                 ResultSet isbnOutput = statement.executeQuery(
                         "SELECT book.isbn, book.book_name, book.sales_price, book.num_pages, book.quantity, publisher.fname, publisher.lname "
@@ -227,7 +232,7 @@ public class User {
             } else if (a == 4) {
 
                 System.out.println("Search by genre. \nEnter genre.");
-                String genreSearch = scan.nextLine();
+                String genreSearch = scanner.nextLine();
                 ResultSet genreOutput = statement.executeQuery("SELECT * " +
                         "FROM (((genre " +
                         "INNER JOIN book on book.isbn = genre.book_id) " +
@@ -236,7 +241,6 @@ public class User {
                         "WHERE genre.genre = '" + genreSearch + "'");
 
                 while (genreOutput.next()) {
-                    ResultSet authorOutput2;
                     isbn = " ";
                     System.out.println("Book Name: " + genreOutput.getString("book_name"));
                     System.out.println("ISBN: " + genreOutput.getString("isbn"));
@@ -256,7 +260,7 @@ public class User {
             } else if (a == 5) {
                 isbn = " ";
                 System.out.println("Search by price. \nEnter price.");
-                String price = scan.nextLine();
+                String price = scanner.nextLine();
                 ResultSet priceOutput = statement.executeQuery("SELECT * " +
                         "FROM ((book " +
                         "INNER JOIN published on published.book_id = book.isbn) " +
@@ -272,6 +276,31 @@ public class User {
                     System.out.println("Quantity available: " + priceOutput.getString("quantity"));
                     System.out.println("Publisher first name: " + priceOutput.getString("fname"));
                     System.out.println("Publisher last name: " + priceOutput.getString("lname"));
+                    authorSearch(isbn);
+                    genreSearch(isbn);
+                }
+                // Shipping.ShippingInfo(cart, priceOutput, statement);
+            }
+            else if (a == 6) {
+                isbn = " ";
+                System.out.println("Search by number of pages. \nEnter number.");
+                String num = scanner.nextLine();
+                ResultSet pageOutput = statement.executeQuery("SELECT * " +
+                        "FROM ((book " +
+                        "INNER JOIN published on published.book_id = book.isbn) " +
+                        "INNER JOIN publisher on publisher.publisher_id = published.p_id) " +
+                        "WHERE book.num_pages = " + num + "");
+
+                while (pageOutput.next()) {
+                    System.out.println("Book Name: " + pageOutput.getString("book_name"));
+                    System.out.println("ISBN: " + pageOutput.getString("isbn"));
+                    isbn = pageOutput.getString("isbn");
+                    System.out.println("Sale price: " + pageOutput.getString("sales_price"));
+                    System.out.println("Number of pages: " + pageOutput.getString("num_pages"));
+                    System.out.println("Quantity available: " + pageOutput.getString("quantity"));
+                    System.out.println("Publisher first name: " + pageOutput.getString("fname"));
+                    System.out.println("Publisher last name: " + pageOutput.getString("lname"));
+
                     authorSearch(isbn);
                     genreSearch(isbn);
                 }
@@ -294,5 +323,37 @@ public class User {
 
         scanner.close();
         return cart;
+    }
+    
+    static void authorSearch(String isbn) {
+        try (Connection connection = DriverManager.getConnection(url, user, pass)) {
+            Statement statement = connection.createStatement();
+            ResultSet authorOutput = statement.executeQuery("SELECT fname, lname " +
+                    "FROM author " +
+                    "INNER JOIN written_by ON written_by.author_id = author.author_id " +
+                    "WHERE written_by.book_id = '" + isbn + "'");
+
+            while (authorOutput.next()) {
+                System.out.println("Author first name: " + authorOutput.getString("fname"));
+                System.out.println("Author last name: " + authorOutput.getString("lname"));
+            }
+        } catch (Exception sqle) {
+            System.out.println("Exception: " + sqle);
+        }
+    }
+
+    static void genreSearch(String isbn) {
+       try (Connection connection = DriverManager.getConnection(url, user, pass)){
+            Statement statement = connection.createStatement();
+            ResultSet genreOutput = statement.executeQuery("SELECT DISTINCT genre " +
+                    "FROM book " +
+                    "INNER JOIN genre ON genre.book_id = '" + isbn + "'");
+
+            while (genreOutput.next()) {
+                System.out.println("Genre(s): " + genreOutput.getString("genre"));
+            }
+        } catch (Exception sqle) {
+            System.out.println("Exception: " + sqle);
+        }
     }
 }
