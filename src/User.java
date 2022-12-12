@@ -36,9 +36,9 @@ public class User {
 
             if (login.next()) {
 
-                System.out.print("Login succesful! Welcome, " + login.getString("username") + "\n");
+                System.out.print("\nLogin succesful! Welcome, " + login.getString("username") + ".\n");
             } else {
-                System.out.print("Login failed. Closing bookstore...");
+                System.out.print("\nLogin failed. Closing bookstore...");
                 System.exit(0);
 
             }
@@ -60,15 +60,17 @@ public class User {
 
         while (true) {
 
-            System.out.println("Make a selection:");
+            System.out.println("\nMake a selection:");
             System.out.println("--------------------");
             System.out.println("1. Track an order");
             System.out.println("2. Search for a book");
+            System.out.println("--------------------");
+            System.out.println("If you want to return to the menu, enter any other number.\n");
 
             int input = scanner.nextInt();
 
             if (input == 1) {
-                System.out.println("Enter order number to be tracked");
+                System.out.println("Enter order number to be tracked:");
                 int order_num = scanner.nextInt();
 
                 try (Connection connection = DriverManager.getConnection(url, user, pass)) {
@@ -84,8 +86,8 @@ public class User {
                         System.out.println("Day: " + result.getString("o_day"));
                         System.out.println("Month: " + result.getString("o_month"));
                         System.out.println("Year: " + result.getString("o_year"));
-                        System.out.println("On the way to: " + result.getString("s_city"));
-                        System.out.println("On the way to: " + result.getString("s_country"));
+                        System.out.println("On the way to: " + result.getString("s_city") + ", "
+                                + result.getString("s_country"));
 
                     } else {
                         System.out.println("Sorry, tracking number not found!");
@@ -96,7 +98,8 @@ public class User {
                 }
 
             } else if (input == 2) {
-                System.out.println("Search by: \n1 Book name\n2 Author name\n3 ISBN\n4 Book Genre\n5 Book Sales price");
+                System.out.println(
+                        "Search by: \n1 Book name\n2 Author name\n3 ISBN\n4 Book Genre\n5 Book Sales price\n6 Number of Pages");
                 int a = scanner.nextInt();
                 bookSearch(a, cart);
 
@@ -115,7 +118,7 @@ public class User {
             Statement statement = connection.createStatement();
             String isbn = " ";
             if (a == 1) {
-                System.out.println("Search by book name. \nEnter book name.");
+                System.out.println("\nSearch by Book Name\n--------------------\nEnter book name:");
                 String book_name = scanner.nextLine();
 
                 ResultSet book_nameOutput = statement.executeQuery("SELECT * " +
@@ -145,9 +148,9 @@ public class User {
 
                 // Shipping.ShippingInfo(cart);
             } else if (a == 2) {
-                System.out.println("Search Book by Author's name. \nEnter Author's first name. ");
+                System.out.println("\nSearch Book by Author Name\n--------------------\nEnter Author's first name: ");
                 String authorFName = scanner.nextLine();
-                System.out.println("Enter Author's last name. ");
+                System.out.println("Enter Author's last name: ");
                 String authorLName = scanner.nextLine();
                 isbn = " ";
 
@@ -188,7 +191,7 @@ public class User {
                 // Shipping.ShippingInfo(cart, authorOutput, statement);
 
             } else if (a == 3) {
-                System.out.println("Search by ISBN number. \nEnter ISBN number.");
+                System.out.println("\nSearch by ISBN Number\n--------------------\nEnter ISBN number:");
                 String isbnSearch = scanner.nextLine();
 
                 ResultSet isbnOutput = statement.executeQuery(
@@ -221,7 +224,7 @@ public class User {
 
             } else if (a == 4) {
 
-                System.out.println("Search by genre. \nEnter genre.");
+                System.out.println("\nSearch by Genre\n--------------------\nEnter genre:");
                 String genreSearch = scanner.nextLine();
                 ResultSet genreOutput = statement.executeQuery("SELECT * " +
                         "FROM (((genre " +
@@ -249,7 +252,7 @@ public class User {
 
             } else if (a == 5) {
                 isbn = " ";
-                System.out.println("Search by price. \nEnter price.");
+                System.out.println("\nSearch by Price\n--------------------\nEnter price:");
                 String price = scanner.nextLine();
                 ResultSet priceOutput = statement.executeQuery("SELECT * " +
                         "FROM ((book " +
@@ -272,7 +275,7 @@ public class User {
                 // Shipping.ShippingInfo(cart, priceOutput, statement);
             } else if (a == 6) {
                 isbn = " ";
-                System.out.println("Search by number of pages. \nEnter number.");
+                System.out.println("\nSearch by Number of Pages\n--------------------\nEnter number:");
                 String num = scanner.nextLine();
                 ResultSet pageOutput = statement.executeQuery("SELECT * " +
                         "FROM ((book " +

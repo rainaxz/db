@@ -55,14 +55,14 @@ public class Shipping {
 
                         // if there is 5 left then request more
                         if (quantity == 5) {
-                            System.out.println("Restock needed!");
+                            System.out.println("\n--------------------\nRestock needed!");
                             ResultSet publisher = statement.executeQuery("SELECT fname, lname  " +
                                     "FROM publisher " +
                                     "INNER JOIN published ON published.p_id = publisher.publisher_id " +
                                     "WHERE published.book_id = '" + isbn + "'");
                             if (publisher.next()) {
                                 System.out.println("Email being sent to " + publisher.getString("fname") + " "
-                                        + publisher.getString("lname"));
+                                        + publisher.getString("lname" + "\n--------------------\n"));
                             }
 
                             // check how many books to request
@@ -107,19 +107,23 @@ public class Shipping {
 
     static void checkout(ArrayList<String> cart) {
 
+        System.out.println("\n--------------------\nCheckout\n--------------------");
+
         Scanner scanner = new Scanner(System.in);
 
         try (Connection connection = DriverManager.getConnection(url, usern, pass)) {
 
-            Statement statement = connection.createStatement();
-            scanner.nextLine();
-            ResultSet orders;
+            // System.out.println("\nSucessfully connected to PostgreSQL database");
 
+            Statement statement = connection.createStatement();
+
+            // scanner.nextLine();
+            ResultSet orders;
             String order_num, tracking_num, o_d, o_m, o_y, b_street, b_num, b_pc, b_city, b_p, b_c, s_street,
                     s_num, s_pc, s_city, s_p, s_c;
 
-            System.out.println("Enter 1 to use a different shipping and billing information");
-            String input = scanner.nextLine();
+            System.out.println("Enter shipping and billing information:");
+            // String input = scanner.nextLine();
             System.out.println("Enter billing information");
             System.out.println("\nStreet name: ");
             b_street = scanner.nextLine();
@@ -168,7 +172,7 @@ public class Shipping {
 
                 if (!orders2.next()) {
                     statement.executeUpdate(
-                            "INSERT INTO orders_receipt VALUES ('" + temp + "', '" + temp + "', '" + temp
+                            "INSERT INTO order_receipt VALUES ('" + temp + "', '" + temp + "', '" + temp
                                     + "', 'November', 2022, '" + b_street + "', '" + b_num + "', '" + b_pc + "', '"
                                     + b_city + "', '" + b_p + "', '" + b_c + "', '" + s_street
                                     + "', '" + s_num + "', '" + s_pc + "', '" + s_city + "', '" + s_p
