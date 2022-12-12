@@ -1,34 +1,37 @@
 
 import java.util.*;
-public class Store{
 
+public class Store {
 
     public void openBookstore() {
 
-
         User user = new User();
+        Owner owner = new Owner();
 
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Welcome to Look Inna Book");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to Look Inna Book");
 
-            while (true) {
-                System.out.println("Make a selection:");
-                System.out.println("--------------------");
-                System.out.println("1. Access as User");
-                System.out.println("2. Access as Owner");
-                System.out.println("3. Quit");
+        while (true) {
+            System.out.println("Make a selection:");
+            System.out.println("--------------------");
+            System.out.println("1. Access as User");
+            System.out.println("2. Access as Owner");
+            System.out.println("3. Quit");
 
-                String input = scanner.next();
+            String input = scanner.next();
 
-                if (input.contains("1")) {
-                    System.out.println("\nUser Account\n--------------------\n");
-                    user.UserRun();
-                } 
-
+            if (input.contains("1")) {
+                System.out.println("\nUser Account\n--------------------\n");
+                user.UserLogin();
+            } else if (input.contains("2")) {
+                System.out.print("Owner Account\n--------------------\n");
+                owner.OwnerLogin();
+            } else {
                 break;
             }
+        }
 
-            scanner.close();
+        scanner.close();
     }
 
     public static void main(String[] args) {

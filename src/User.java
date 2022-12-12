@@ -7,47 +7,44 @@ public class User {
     static String user = "postgres";
     static String pass = "pass";
 
-    public void UserRun(){
+    public void UserLogin() {
 
-        //Login
+        // Login
         System.out.println("Please log in:\n");
         Scanner scanner = new Scanner(System.in);
 
-        //username
+        // username
         String input_username;
         System.out.println("Enter username: ");
         input_username = scanner.nextLine();
-        
-        //password
+
+        // password
         String input_password;
         System.out.println("Enter Password: ");
         input_password = scanner.nextLine();
 
-        // System.out.println("username: " + input_username);
-        // System.out.println("password: " + input_password);
-
         Boolean success = true;
-        ResultSet login; 
+        ResultSet login;
 
-        try (Connection connection = DriverManager.getConnection(url, user, pass)){
+        try (Connection connection = DriverManager.getConnection(url, user, pass)) {
 
             System.out.println("Connected to the PostgreSQL server successfully.");
 
             Statement statement = connection.createStatement();
-            login = statement.executeQuery("SELECT * " + "FROM user_info " + "WHERE username='" + input_username + "' AND password='" + input_password + "'");
+            login = statement.executeQuery("SELECT * " + "FROM user_info " + "WHERE username='" + input_username
+                    + "' AND password='" + input_password + "'");
 
-            while(login.next()){
-                System.out.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if (login.next()) {
+                System.out.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
                 System.out.println(login.getString("username"));
                 System.out.println(login.getString("password"));
 
-                String db_user = login.getString("username");
-                String db_pass = login.getString("password");
+                System.out.print("Login succesful! Welcome back, " + login.getString("username"));
+            } else {
+                System.out.print("Login failed. Closing bookstore...");
+                success = false;
+                System.exit(0);
 
-                if(!(db_user == input_username && db_pass == input_password)){
-                    System.out.println("Invalid login info. Closing Bookstore...");
-                    success = false;
-                }
             }
 
         } catch (SQLException e) {
@@ -55,14 +52,14 @@ public class User {
             success = false;
         }
 
-        if (success){
+        if (success) {
             userPrompts();
-        }   
+        }
+        scanner.close();
     }
 
-    public static void userPrompts(){
+    public void userPrompts() {
 
-    
         ArrayList<String> cart = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
 
@@ -72,7 +69,7 @@ public class User {
             System.out.println("--------------------");
             System.out.println("1. Track an order");
             System.out.println("2. Search for a book");
-            
+
             int input = scanner.nextInt();
 
             if (input == 1) {
@@ -80,14 +77,14 @@ public class User {
                 int order_num = scanner.nextInt();
 
                 try (Connection connection = DriverManager.getConnection(url, user, pass)) {
-                    
+
                     Statement statement = connection.createStatement();
 
                     ResultSet result = statement.executeQuery("SELECT * " +
-                                                            "FROM order_receipt " +
-                                                            "WHERE order_number = '"+order_num+"'");
+                            "FROM order_receipt " +
+                            "WHERE order_number = '" + order_num + "'");
 
-                    if (result.next()){
+                    if (result.next()) {
                         System.out.println("Tracking Number: " + result.getString("tracking_num"));
                         System.out.println("Day: " + result.getString("o_day"));
                         System.out.println("Month: " + result.getString("o_month"));
@@ -99,7 +96,7 @@ public class User {
                         System.out.println("Sorry, tracking number not found!");
                     }
 
-                } catch(Exception sqle) {
+                } catch (Exception sqle) {
                     System.out.println("Exception: " + sqle);
                 }
 
@@ -113,13 +110,13 @@ public class User {
             }
 
             scanner.close();
-        } 
+        }
     }
 
-    static ArrayList<String> bookSearch (int a, ArrayList<String > cart){
+    static ArrayList<String> bookSearch(int a, ArrayList<String> cart) {
 
         Scanner scanner = new Scanner(System.in);
-        
+
         try (Connection connection = DriverManager.getConnection(url, user, pass)) {
 
             Statement statement = connection.createStatement();
@@ -280,8 +277,7 @@ public class User {
                     genreSearch(isbn);
                 }
                 // Shipping.ShippingInfo(cart, priceOutput, statement);
-            }
-            else if (a == 6) {
+            } else if (a == 6) {
                 isbn = " ";
                 System.out.println("Search by number of pages. \nEnter number.");
                 String num = scanner.nextLine();
@@ -306,25 +302,21 @@ public class User {
                 }
                 // Shipping.ShippingInfo(cart, priceOutput, statement);
             }
-                
-                
 
-                // else {
-                //     System.out.println("Sorry, this book does not exit!");
-                //     return cart;
-                // }
+            // else {
+            // System.out.println("Sorry, this book does not exit!");
+            // return cart;
+            // }
 
-                Shipping.ShippingInfo(cart);
+            Shipping.ShippingInfo(cart);
 
-
-            } catch (Exception sqle) {
+        } catch (Exception sqle) {
             System.out.println("Exception: " + sqle);
         }
 
-        scanner.close();
         return cart;
     }
-    
+
     static void authorSearch(String isbn) {
         try (Connection connection = DriverManager.getConnection(url, user, pass)) {
             Statement statement = connection.createStatement();
@@ -343,7 +335,7 @@ public class User {
     }
 
     static void genreSearch(String isbn) {
-       try (Connection connection = DriverManager.getConnection(url, user, pass)){
+        try (Connection connection = DriverManager.getConnection(url, user, pass)) {
             Statement statement = connection.createStatement();
             ResultSet genreOutput = statement.executeQuery("SELECT DISTINCT genre " +
                     "FROM book " +
