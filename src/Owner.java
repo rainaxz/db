@@ -50,7 +50,6 @@ public class Owner {
         if (success) {
             ownerPrompts();
         }
-        scanner.close();
 
     }
 
@@ -342,6 +341,5 @@ public class Owner {
         } catch (Exception sqle) {
             System.out.println("An exception: " + sqle);
         }
-        scanner.close();
     }
 }

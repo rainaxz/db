@@ -28,21 +28,17 @@ public class User {
 
         try (Connection connection = DriverManager.getConnection(url, user, pass)) {
 
-            System.out.println("Connected to the PostgreSQL server successfully.");
+            // System.out.println("Connected to the PostgreSQL server successfully.");
 
             Statement statement = connection.createStatement();
             login = statement.executeQuery("SELECT * " + "FROM user_info " + "WHERE username='" + input_username
                     + "' AND password='" + input_password + "'");
 
             if (login.next()) {
-                System.out.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-                System.out.println(login.getString("username"));
-                System.out.println(login.getString("password"));
 
-                System.out.print("Login succesful! Welcome back, " + login.getString("username"));
+                System.out.print("Login succesful! Welcome, " + login.getString("username") + "\n");
             } else {
                 System.out.print("Login failed. Closing bookstore...");
-                success = false;
                 System.exit(0);
 
             }
@@ -55,7 +51,6 @@ public class User {
         if (success) {
             userPrompts();
         }
-        scanner.close();
     }
 
     public void userPrompts() {
@@ -108,8 +103,6 @@ public class User {
             } else {
                 break;
             }
-
-            scanner.close();
         }
     }
 
